@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Retro Center – Enhanced with Username</title>
+  <title>Retro Center – Enhanced</title>
   <style>
-    /* Reset and Base Styles */
+    /* Base and Reset */
     html, body {
       margin: 0;
       padding: 0;
@@ -27,7 +27,7 @@
       justify-content: space-between;
       padding: 0 10px;
       z-index: 50;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
     }
     #navBar .nav-buttons { display: flex; align-items: center; }
     #navBar button {
@@ -41,18 +41,17 @@
       color: #fff;
     }
     #navBar button:hover { background: #166bb2; }
-    /* Panels: Settings, Games, Leaderboard */
-    #settingsPanel, #gamesMenu, #leaderboardPanel {
+    /* Panels: Settings & Leaderboard */
+    #settingsPanel, #leaderboardPanel {
       position: fixed;
       background: rgba(0, 0, 0, 0.9);
       padding: 15px;
       border-radius: 8px;
       font-size: 14px;
       z-index: 40;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
     #settingsPanel { top: 70px; right: 10px; max-width: 250px; }
-    #gamesMenu { top: 70px; left: 10px; max-width: 200px; }
     #leaderboardPanel { bottom: 10px; left: 10px; max-width: 300px; max-height: 300px; overflow-y: auto; }
     #settingsPanel label, #leaderboardPanel label { display: block; margin-top: 10px; }
     #settingsPanel input[type="color"],
@@ -61,7 +60,7 @@
       width: 100%;
       margin-top: 5px;
     }
-    /* Main Container (Retro Games & Search) */
+    /* Main Container (Home Page) */
     #mainContainer {
       position: relative;
       z-index: 10;
@@ -99,7 +98,45 @@
     }
     .search-box button:hover { background: #166bb2; }
     .search-box select { margin-bottom: 10px; }
-    /* Game Containers – Fullscreen (for most Chromebook screens) */
+    /* Games List Page */
+    #gamesListPage {
+      display: none;
+      padding-top: 80px;
+      text-align: center;
+    }
+    #gamesListPage h2 {
+      margin-bottom: 20px;
+    }
+    #gamesSearchInput {
+      padding: 10px;
+      font-size: 16px;
+      width: 300px;
+      margin-bottom: 20px;
+    }
+    #gamesListContainer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .gameItem {
+      display: inline-block;
+      width: 150px;
+      margin: 10px;
+      padding: 10px;
+      background: #222;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .gameItem:hover {
+      background: #444;
+    }
+    .gameItem img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    /* Game Containers */
     .gameContainer {
       display: none;
       position: absolute;
@@ -110,6 +147,25 @@
       background: #000;
       z-index: 20;
       text-align: center;
+    }
+    /* Default background graphics for each game (you can customize below) */
+    #flappyGame {
+      background-color: #70c5ce;
+      background-image: url('https://via.placeholder.com/800x600/70c5ce/ffffff?text=Flappy+BG');
+      background-size: cover;
+      background-position: center;
+    }
+    #snakeGame {
+      background-color: #1a1a1a;
+      background-image: url('https://via.placeholder.com/800x600/228B22/ffffff?text=Snake+BG');
+      background-size: cover;
+      background-position: center;
+    }
+    #pacmanGame {
+      background-color: #000;
+      background-image: url('https://via.placeholder.com/800x600/000000/ffffff?text=Pacman+BG');
+      background-size: cover;
+      background-position: center;
     }
     .gameContainer canvas {
       background: #111;
@@ -129,16 +185,6 @@
       cursor: pointer;
     }
     .gameContainer button:hover { background: #166bb2; }
-    /* Floating Shapes (Background Effect) */
-    .shape {
-      position: absolute;
-      animation: float 8s ease-in-out infinite;
-    }
-    @keyframes float {
-      0%   { transform: translateY(0); opacity: 0.7; }
-      50%  { transform: translateY(-30px); opacity: 0.3; }
-      100% { transform: translateY(0); opacity: 0.7; }
-    }
     /* Flappy Bird Start Overlay */
     #flappyStartOverlay {
       position: absolute;
@@ -161,7 +207,7 @@
       color: #fff;
       z-index: 35;
     }
-    /* Leaderboard List Style */
+    /* Leaderboard List */
     .leaderboard-list {
       list-style-type: decimal;
       padding-left: 20px;
@@ -207,15 +253,6 @@
     <input type="color" id="flappyBgPicker" value="#70c5ce">
   </div>
 
-  <!-- Games Menu -->
-  <div id="gamesMenu">
-    <strong>Games</strong>
-    <button id="flappyBtn">Flappy Bird</button>
-    <button id="snakeBtn">Snake</button>
-    <button id="pacmanBtn">Pacman</button>
-    <button id="closeGamesBtn">Close</button>
-  </div>
-
   <!-- Leaderboard Panel -->
   <div id="leaderboardPanel">
     <strong>Leaderboard</strong>
@@ -223,7 +260,7 @@
     <button id="refreshLeaderboardBtn">Refresh Leaderboard</button>
   </div>
 
-  <!-- Main Container (Retro Games & Search) -->
+  <!-- Main Container (Home Page) -->
   <div id="mainContainer">
     <h1>Retro Games</h1>
     <div class="search-box">
@@ -239,6 +276,27 @@
     </div>
   </div>
 
+  <!-- Games List Page (Interior Page) -->
+  <div id="gamesListPage">
+    <h2>Available Games</h2>
+    <input type="text" id="gamesSearchInput" placeholder="Search games...">
+    <div id="gamesListContainer">
+      <div class="gameItem" data-game="flappy">
+        <img src="https://via.placeholder.com/100?text=Flappy+Bird" alt="Flappy Bird">
+        <p>Flappy Bird</p>
+      </div>
+      <div class="gameItem" data-game="snake">
+        <img src="https://via.placeholder.com/100?text=Snake" alt="Snake">
+        <p>Snake</p>
+      </div>
+      <div class="gameItem" data-game="pacman">
+        <img src="https://via.placeholder.com/100?text=Pacman" alt="Pacman">
+        <p>Pacman</p>
+      </div>
+    </div>
+    <button id="backFromGamesList">Back</button>
+  </div>
+
   <!-- Flappy Bird Game Container -->
   <div class="gameContainer" id="flappyGame">
     <h2>Flappy Bird</h2>
@@ -249,6 +307,7 @@
     </div>
     <div style="margin-top:10px;">
       <button id="flappyRestartBtn" style="display:none;">Restart</button>
+      <button class="gameBackBtn" data-back="games">Back to Games</button>
     </div>
     <div id="flappyScoreDisplay"></div>
   </div>
@@ -259,6 +318,7 @@
     <canvas id="snakeCanvas"></canvas>
     <br>
     <button id="snakeRestartBtn" style="display:none;">Restart</button>
+    <button class="gameBackBtn" data-back="games">Back to Games</button>
   </div>
 
   <!-- Pacman Game Container -->
@@ -267,6 +327,7 @@
     <canvas id="pacmanCanvas"></canvas>
     <br>
     <button id="pacmanRestartBtn" style="display:none;">Restart</button>
+    <button class="gameBackBtn" data-back="games">Back to Games</button>
   </div>
 
   <script>
@@ -294,35 +355,83 @@
 
       /* --- Global Variables --- */
       var currentGame = ""; // "flappy", "snake", "pacman"
-      
-      /* --- Navigation --- */
+
+      /* --- Navigation Events --- */
+      // Home button goes to Home (mainContainer)
       document.getElementById("homeBtn").addEventListener("click", function() {
         stopCurrentGame();
-        hideAllGameContainers();
+        hideAllSections();
         document.getElementById("mainContainer").style.display = "block";
       });
+      // Nav "Games" button goes to Games List page
+      document.getElementById("gamesBtn").addEventListener("click", function() {
+        stopCurrentGame();
+        hideAllSections();
+        document.getElementById("gamesListPage").style.display = "block";
+      });
+      // Back button from Games List returns to Home
+      document.getElementById("backFromGamesList").addEventListener("click", function() {
+        hideAllSections();
+        document.getElementById("mainContainer").style.display = "block";
+      });
+      // Other nav buttons
       document.getElementById("nettleBtn").addEventListener("click", function() {
         window.open("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiID8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTI4MCIgaGVpZ2h0PSI3MjAiIHZpZXdCb3g9IjAgMCAxMjgwIDcyMCI+Cgk8dGl0bGU+R29vZ2xlPC90aXRsZT4KCTxmb3JlaWduT2JqZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMjgwIiBoZWlnaHQ9IjcyMCI+CgkJPGVtYmVkIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hodG1sIiBzcmM9Imh0dHBzOi8vbmV0dGxld2ViLmNvbS8iIHR5cGU9InRleHQvcGxhaW4iIHdpZHRoPSIxMjYwIiBoZWlnaHQ9IjcwMCIgLz4KCTwvZm9yZWduT2JqZWN0Pgo8L3N2Zz4=", "_blank");
       });
       document.getElementById("toggleSettingsBtn").addEventListener("click", function() {
-        let panel = document.getElementById("settingsPanel");
+        var panel = document.getElementById("settingsPanel");
         panel.style.display = (panel.style.display === "none" || panel.style.display === "") ? "block" : "none";
       });
-      document.getElementById("gamesBtn").addEventListener("click", function() {
-        let menu = document.getElementById("gamesMenu");
-        menu.style.display = (menu.style.display === "none" || menu.style.display === "") ? "block" : "none";
-      });
-      document.getElementById("closeGamesBtn").addEventListener("click", function() {
-        document.getElementById("gamesMenu").style.display = "none";
-      });
       document.getElementById("leaderboardBtn").addEventListener("click", function() {
-        let lb = document.getElementById("leaderboardPanel");
+        var lb = document.getElementById("leaderboardPanel");
         lb.style.display = (lb.style.display === "none" || lb.style.display === "") ? "block" : "none";
         refreshLeaderboard();
       });
       document.getElementById("refreshLeaderboardBtn").addEventListener("click", refreshLeaderboard);
 
-      /* --- Search Functionality --- */
+      /* --- Hide All Sections Helper --- */
+      function hideAllSections() {
+        document.getElementById("mainContainer").style.display = "none";
+        document.getElementById("gamesListPage").style.display = "none";
+        document.getElementById("flappyGame").style.display = "none";
+        document.getElementById("snakeGame").style.display = "none";
+        document.getElementById("pacmanGame").style.display = "none";
+      }
+
+      /* --- Games List Filtering --- */
+      document.getElementById("gamesSearchInput").addEventListener("keyup", function() {
+        let filter = this.value.toLowerCase();
+        let items = document.querySelectorAll(".gameItem");
+        items.forEach(function(item) {
+          let text = item.textContent.toLowerCase();
+          item.style.display = text.indexOf(filter) > -1 ? "inline-block" : "none";
+        });
+      });
+      
+      /* --- Game Item Clicks --- */
+      let gameItems = document.querySelectorAll(".gameItem");
+      gameItems.forEach(function(item) {
+        item.addEventListener("click", function() {
+          let game = this.getAttribute("data-game");
+          hideAllSections();
+          if(game === "flappy") {
+            document.getElementById("flappyGame").style.display = "block";
+            document.getElementById("flappyGame").style.backgroundColor = document.getElementById("flappyBgPicker").value;
+            currentGame = "flappy";
+            document.getElementById("flappyStartOverlay").style.display = "flex"; // wait for Start
+          } else if(game === "snake") {
+            document.getElementById("snakeGame").style.display = "block";
+            currentGame = "snake";
+            initSnake();
+          } else if(game === "pacman") {
+            document.getElementById("pacmanGame").style.display = "block";
+            currentGame = "pacman";
+            initPacman();
+          }
+        });
+      });
+
+      /* --- Search Box Functionality --- */
       document.getElementById("searchBtn").addEventListener("click", function() {
         let query = document.getElementById("searchInput").value.trim();
         if (!query) return;
@@ -469,7 +578,7 @@
         flappyInterval = setInterval(updateFlappy, 20);
       }
       function flappyKeyHandler(e) {
-        if(e.code === "Space") flappyFlap();
+        if (e.code === "Space") flappyFlap();
       }
       function flappyFlap() {
         flappyBird.velocity = lift;
@@ -477,22 +586,22 @@
       function updateFlappy() {
         flappyBird.velocity += gravity;
         flappyBird.y += flappyBird.velocity;
-        if(flappyBird.y + flappyBird.radius >= flappyCanvas.height || flappyBird.y - flappyBird.radius <= 0)
+        if (flappyBird.y + flappyBird.radius >= flappyCanvas.height || flappyBird.y - flappyBird.radius <= 0)
           flappyGameOver = true;
-        if(pipes.length === 0 || pipes[pipes.length - 1].x < flappyCanvas.width - 200)
+        if (pipes.length === 0 || pipes[pipes.length - 1].x < flappyCanvas.width - 200)
           pipes.push({ x: flappyCanvas.width, top: Math.random() * (flappyCanvas.height - pipeGap - 50) + 20 });
-        for(var i = 0; i < pipes.length; i++) { pipes[i].x -= 2; }
-        if(pipes.length > 0 && pipes[0].x + pipeWidth < 0) { pipes.shift(); flappyScore++; }
-        for(var i = 0; i < pipes.length; i++) {
+        for (var i = 0; i < pipes.length; i++) { pipes[i].x -= 2; }
+        if (pipes.length > 0 && pipes[0].x + pipeWidth < 0) { pipes.shift(); flappyScore++; }
+        for (var i = 0; i < pipes.length; i++) {
           var p = pipes[i];
-          if(flappyBird.x + flappyBird.radius > p.x && flappyBird.x - flappyBird.radius < p.x + pipeWidth) {
-            if(flappyBird.y - flappyBird.radius < p.top || flappyBird.y + flappyBird.radius > p.top + pipeGap)
+          if (flappyBird.x + flappyBird.radius > p.x && flappyBird.x - flappyBird.radius < p.x + pipeWidth) {
+            if (flappyBird.y - flappyBird.radius < p.top || flappyBird.y + flappyBird.radius > p.top + pipeGap)
               flappyGameOver = true;
           }
         }
         document.getElementById("flappyScoreDisplay").innerText = "Score: " + flappyScore;
         flappyCtx.clearRect(0, 0, flappyCanvas.width, flappyCanvas.height);
-        if(flappySkinUnlocked)
+        if (flappySkinUnlocked)
           flappyCtx.drawImage(duckImage, flappyBird.x - flappyBird.radius, flappyBird.y - flappyBird.radius, flappyBird.radius * 2, flappyBird.radius * 2);
         else {
           flappyCtx.fillStyle = "yellow";
@@ -500,7 +609,7 @@
           flappyCtx.arc(flappyBird.x, flappyBird.y, flappyBird.radius, 0, Math.PI * 2);
           flappyCtx.fill();
         }
-        for(var i = 0; i < pipes.length; i++) {
+        for (var i = 0; i < pipes.length; i++) {
           var p = pipes[i];
           flappyCtx.drawImage(pipeImage, p.x, 0, pipeWidth, p.top);
           flappyCtx.save();
@@ -509,9 +618,8 @@
           flappyCtx.drawImage(pipeImage, 0, 0, pipeWidth, flappyCanvas.height - p.top - pipeGap);
           flappyCtx.restore();
         }
-        if(flappyGameOver) {
+        if (flappyGameOver) {
           clearInterval(flappyInterval);
-          // Instead of prompting, use the stored username.
           updateLeaderboard("flappy_bird", flappyScore, currentUsername);
           document.getElementById("flappyRestartBtn").style.display = "inline-block";
           flappyCtx.fillStyle = "red";
@@ -530,10 +638,10 @@
       var snake, snakeDirection, snakeFood, snakeSize, snakeGameOver, snakeInterval;
       function snakeKeyHandler(e) {
         var key = e.code;
-        if(key === "ArrowUp" && snakeDirection !== "down") snakeDirection = "up";
-        else if(key === "ArrowDown" && snakeDirection !== "up") snakeDirection = "down";
-        else if(key === "ArrowLeft" && snakeDirection !== "right") snakeDirection = "left";
-        else if(key === "ArrowRight" && snakeDirection !== "left") snakeDirection = "right";
+        if (key === "ArrowUp" && snakeDirection !== "down") snakeDirection = "up";
+        else if (key === "ArrowDown" && snakeDirection !== "up") snakeDirection = "down";
+        else if (key === "ArrowLeft" && snakeDirection !== "right") snakeDirection = "left";
+        else if (key === "ArrowRight" && snakeDirection !== "left") snakeDirection = "right";
       }
       function initSnake() {
         snakeSize = 20;
@@ -644,7 +752,6 @@
         pacmanCtx.lineTo(pacman.x + pacmanSize/2, pacman.y + pacmanSize/2);
         pacmanCtx.fill();
         var eatenCount = pacmanPellets.filter(p => p.eaten).length;
-        // For simplicity, update leaderboard after each update
         updateLeaderboard("pacman", eatenCount, currentUsername);
       }
       document.getElementById("pacmanRestartBtn").addEventListener("click", function() {
@@ -652,22 +759,22 @@
         initPacman();
       });
 
-      /* --- Game Start Listeners --- */
+      /* --- Game Start Actions --- */
       document.getElementById("flappyBtn").addEventListener("click", function() {
-        hideAllGameContainers();
+        hideAllSections();
         document.getElementById("flappyGame").style.display = "block";
         document.getElementById("flappyGame").style.backgroundColor = document.getElementById("flappyBgPicker").value;
         currentGame = "flappy";
         document.getElementById("flappyStartOverlay").style.display = "flex";
       });
       document.getElementById("snakeBtn").addEventListener("click", function() {
-        hideAllGameContainers();
+        hideAllSections();
         document.getElementById("snakeGame").style.display = "block";
         currentGame = "snake";
         initSnake();
       });
       document.getElementById("pacmanBtn").addEventListener("click", function() {
-        hideAllGameContainers();
+        hideAllSections();
         document.getElementById("pacmanGame").style.display = "block";
         currentGame = "pacman";
         initPacman();
@@ -676,27 +783,16 @@
         document.getElementById("flappyStartOverlay").style.display = "none";
         initFlappy();
       });
-      
-      /* --- Utility: Hide All Game Containers --- */
-      function hideAllGameContainers() {
-        document.getElementById("flappyGame").style.display = "none";
-        document.getElementById("snakeGame").style.display = "none";
-        document.getElementById("pacmanGame").style.display = "none";
-      }
-      /* --- Utility: Stop the Current Game --- */
-      function stopCurrentGame() {
-        if (currentGame === "flappy") {
-          document.removeEventListener("keydown", flappyKeyHandler);
-          clearInterval(flappyInterval);
-        } else if (currentGame === "snake") {
-          document.removeEventListener("keydown", snakeKeyHandler);
-          clearInterval(snakeInterval);
-        } else if (currentGame === "pacman") {
-          document.removeEventListener("keydown", pacmanKeyHandler);
-          clearInterval(pacmanInterval);
-        }
-        currentGame = "";
-      }
+
+      /* --- Back to Games from within a Game --- */
+      let backButtons = document.querySelectorAll(".gameBackBtn");
+      backButtons.forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          stopCurrentGame();
+          hideAllGameContainers();
+          document.getElementById("gamesListPage").style.display = "block";
+        });
+      });
     });
   </script>
 </body>
