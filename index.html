@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Retro Center – Enhanced</title>
+  <title>Retro Center – Enhanced with Username</title>
   <style>
     /* Reset and Base Styles */
     html, body {
@@ -27,7 +27,7 @@
       justify-content: space-between;
       padding: 0 10px;
       z-index: 50;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
     }
     #navBar .nav-buttons { display: flex; align-items: center; }
     #navBar button {
@@ -44,12 +44,12 @@
     /* Panels: Settings, Games, Leaderboard */
     #settingsPanel, #gamesMenu, #leaderboardPanel {
       position: fixed;
-      background: rgba(0,0,0,0.9);
+      background: rgba(0, 0, 0, 0.9);
       padding: 15px;
       border-radius: 8px;
       font-size: 14px;
       z-index: 40;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     }
     #settingsPanel { top: 70px; right: 10px; max-width: 250px; }
     #gamesMenu { top: 70px; left: 10px; max-width: 200px; }
@@ -61,7 +61,7 @@
       width: 100%;
       margin-top: 5px;
     }
-    /* Main Container (Search Section) */
+    /* Main Container (Retro Games & Search) */
     #mainContainer {
       position: relative;
       z-index: 10;
@@ -99,7 +99,7 @@
     }
     .search-box button:hover { background: #166bb2; }
     .search-box select { margin-bottom: 10px; }
-    /* Game Containers – Fullscreen on most Chromebook screens */
+    /* Game Containers – Fullscreen (for most Chromebook screens) */
     .gameContainer {
       display: none;
       position: absolute;
@@ -129,14 +129,14 @@
       cursor: pointer;
     }
     .gameContainer button:hover { background: #166bb2; }
-    /* Floating Shapes (Background effect) */
+    /* Floating Shapes (Background Effect) */
     .shape {
       position: absolute;
       animation: float 8s ease-in-out infinite;
     }
     @keyframes float {
-      0% { transform: translateY(0); opacity: 0.7; }
-      50% { transform: translateY(-30px); opacity: 0.3; }
+      0%   { transform: translateY(0); opacity: 0.7; }
+      50%  { transform: translateY(-30px); opacity: 0.3; }
       100% { transform: translateY(0); opacity: 0.7; }
     }
     /* Flappy Bird Start Overlay */
@@ -146,7 +146,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0, 0, 0, 0.7);
       z-index: 30;
       display: flex;
       align-items: center;
@@ -271,9 +271,16 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function() {
+      /* --- Persistent Username --- */
+      if (!localStorage.getItem("username")) {
+        let uname = prompt("Welcome! Please enter your username:");
+        if (!uname) { uname = "Guest"; }
+        localStorage.setItem("username", uname);
+      }
+      let currentUsername = localStorage.getItem("username");
+
       /* --- Responsive Canvas Sizing --- */
       function setCanvasSize(canvas, widthFactor, heightFactor) {
-        // Use a percentage of viewport width and height (minus nav bar height)
         canvas.width = Math.floor(window.innerWidth * widthFactor);
         canvas.height = Math.floor((window.innerHeight - 60) * heightFactor);
       }
@@ -298,18 +305,18 @@
         window.open("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiID8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTI4MCIgaGVpZ2h0PSI3MjAiIHZpZXdCb3g9IjAgMCAxMjgwIDcyMCI+Cgk8dGl0bGU+R29vZ2xlPC90aXRsZT4KCTxmb3JlaWduT2JqZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMjgwIiBoZWlnaHQ9IjcyMCI+CgkJPGVtYmVkIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hodG1sIiBzcmM9Imh0dHBzOi8vbmV0dGxld2ViLmNvbS8iIHR5cGU9InRleHQvcGxhaW4iIHdpZHRoPSIxMjYwIiBoZWlnaHQ9IjcwMCIgLz4KCTwvZm9yZWduT2JqZWN0Pgo8L3N2Zz4=", "_blank");
       });
       document.getElementById("toggleSettingsBtn").addEventListener("click", function() {
-        var panel = document.getElementById("settingsPanel");
+        let panel = document.getElementById("settingsPanel");
         panel.style.display = (panel.style.display === "none" || panel.style.display === "") ? "block" : "none";
       });
       document.getElementById("gamesBtn").addEventListener("click", function() {
-        var menu = document.getElementById("gamesMenu");
+        let menu = document.getElementById("gamesMenu");
         menu.style.display = (menu.style.display === "none" || menu.style.display === "") ? "block" : "none";
       });
       document.getElementById("closeGamesBtn").addEventListener("click", function() {
         document.getElementById("gamesMenu").style.display = "none";
       });
       document.getElementById("leaderboardBtn").addEventListener("click", function() {
-        var lb = document.getElementById("leaderboardPanel");
+        let lb = document.getElementById("leaderboardPanel");
         lb.style.display = (lb.style.display === "none" || lb.style.display === "") ? "block" : "none";
         refreshLeaderboard();
       });
@@ -317,18 +324,18 @@
 
       /* --- Search Functionality --- */
       document.getElementById("searchBtn").addEventListener("click", function() {
-        var query = document.getElementById("searchInput").value.trim();
+        let query = document.getElementById("searchInput").value.trim();
         if (!query) return;
-        var targetUrl = query;
+        let targetUrl = query;
         if (!/^https?:\/\//i.test(query)) {
           if (query.indexOf(" ") !== -1 || query.indexOf(".") === -1)
             targetUrl = "https://www.google.com/search?q=" + encodeURIComponent(query);
           else
             targetUrl = "https://" + query;
         }
-        var proxyBase = document.getElementById("proxySelect").value;
+        let proxyBase = document.getElementById("proxySelect").value;
         if (proxyBase) { targetUrl = proxyBase + encodeURIComponent(targetUrl); }
-        var newWin = window.open("about:blank", "_blank");
+        let newWin = window.open("about:blank", "_blank");
         newWin.document.write(`<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -346,13 +353,13 @@
       /* --- Floating Shapes --- */
       function generateShapes() {
         document.querySelectorAll('.shape').forEach(function(elem) { elem.remove(); });
-        var count = parseInt(document.getElementById("shapeCountSlider").value);
-        var color = document.getElementById("shapeColorPicker").value;
-        var type = document.getElementById("shapeTypeSelect").value;
-        for (var i = 0; i < count; i++) {
-          var shape = document.createElement("div");
+        let count = parseInt(document.getElementById("shapeCountSlider").value);
+        let color = document.getElementById("shapeColorPicker").value;
+        let type = document.getElementById("shapeTypeSelect").value;
+        for (let i = 0; i < count; i++) {
+          let shape = document.createElement("div");
           shape.className = "shape";
-          var size = Math.floor(Math.random() * 50) + 20;
+          let size = Math.floor(Math.random() * 50) + 20;
           shape.style.width = size + "px";
           shape.style.height = size + "px";
           shape.style.left = Math.random() * window.innerWidth + "px";
@@ -384,20 +391,20 @@
 
       /* --- Leaderboard Functions --- */
       function getLeaderboard(gameKey) {
-        var data = localStorage.getItem("leaderboard_" + gameKey);
+        let data = localStorage.getItem("leaderboard_" + gameKey);
         return data ? JSON.parse(data) : [];
       }
       function updateLeaderboard(gameKey, score, name) {
-        var board = getLeaderboard(gameKey);
+        let board = getLeaderboard(gameKey);
         board.push({name: name, score: score});
-        board.sort(function(a, b){ return b.score - a.score; });
+        board.sort(function(a, b) { return b.score - a.score; });
         board = board.slice(0, 10);
         localStorage.setItem("leaderboard_" + gameKey, JSON.stringify(board));
       }
       function refreshLeaderboard() {
-        var lbContent = "";
+        let lbContent = "";
         [["Flappy Bird", "flappy_bird"], ["Snake", "snake"], ["Pacman", "pacman"]].forEach(function(game) {
-          var board = getLeaderboard(game[1]);
+          let board = getLeaderboard(game[1]);
           lbContent += "<strong>" + game[0] + " Leaderboard</strong><ol class='leaderboard-list'>";
           board.forEach(function(entry) {
             lbContent += "<li>" + entry.name + " - " + entry.score + "</li>";
@@ -405,11 +412,10 @@
           lbContent += "</ol>";
         });
         document.getElementById("leaderboardContent").innerHTML = lbContent;
-        // Auto-refresh every 5 hours
         setTimeout(refreshLeaderboard, 5 * 60 * 60 * 1000);
       }
 
-      /* --- Game Management Functions --- */
+      /* --- Game Management --- */
       function hideAllGameContainers() {
         document.getElementById("flappyGame").style.display = "none";
         document.getElementById("snakeGame").style.display = "none";
@@ -432,7 +438,6 @@
       /* --- Flappy Bird Game --- */
       var flappyCanvas = document.getElementById("flappyCanvas"),
           flappyCtx = flappyCanvas.getContext("2d");
-      // Preload images for flappy (duck skin and pipe)
       var duckImage = new Image();
       duckImage.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Duck_icon_round.svg/64px-Duck_icon_round.svg.png";
       var pipeImage = new Image();
@@ -440,13 +445,12 @@
       var flappyPlays = parseInt(localStorage.getItem("flappyPlays") || "0");
       var flappySkinUnlocked = (flappyPlays >= 10);
       var flappyBird, gravity, lift, pipes, pipeGap, pipeWidth, flappyScore, flappyGameOver, flappyInterval;
-      
       function resetFlappyGame() {
         flappyPlays++;
         localStorage.setItem("flappyPlays", flappyPlays);
         if (flappyPlays >= 10) flappySkinUnlocked = true;
         setCanvasSize(flappyCanvas, 0.9, 0.9);
-        flappyBird = { x: 80, y: flappyCanvas.height / 2, radius: 15, velocity: 0 };
+        flappyBird = { x: 80, y: flappyCanvas.height/2, radius: 15, velocity: 0 };
         gravity = 0.6;
         lift = -10;
         pipes = [];
@@ -454,7 +458,6 @@
         pipeWidth = 50;
         flappyScore = 0;
         flappyGameOver = false;
-        // Add one starting pipe
         pipes.push({ x: flappyCanvas.width, top: Math.random() * (flappyCanvas.height - pipeGap - 50) + 20 });
         clearInterval(flappyInterval);
         document.removeEventListener("keydown", flappyKeyHandler);
@@ -466,7 +469,7 @@
         flappyInterval = setInterval(updateFlappy, 20);
       }
       function flappyKeyHandler(e) {
-        if (e.code === "Space") flappyFlap();
+        if(e.code === "Space") flappyFlap();
       }
       function flappyFlap() {
         flappyBird.velocity = lift;
@@ -474,23 +477,22 @@
       function updateFlappy() {
         flappyBird.velocity += gravity;
         flappyBird.y += flappyBird.velocity;
-        if (flappyBird.y + flappyBird.radius >= flappyCanvas.height || flappyBird.y - flappyBird.radius <= 0)
+        if(flappyBird.y + flappyBird.radius >= flappyCanvas.height || flappyBird.y - flappyBird.radius <= 0)
           flappyGameOver = true;
-        if (pipes.length === 0 || pipes[pipes.length - 1].x < flappyCanvas.width - 200)
+        if(pipes.length === 0 || pipes[pipes.length - 1].x < flappyCanvas.width - 200)
           pipes.push({ x: flappyCanvas.width, top: Math.random() * (flappyCanvas.height - pipeGap - 50) + 20 });
-        for (var i = 0; i < pipes.length; i++) { pipes[i].x -= 2; }
-        if (pipes.length > 0 && pipes[0].x + pipeWidth < 0) { pipes.shift(); flappyScore++; }
-        for (var i = 0; i < pipes.length; i++) {
+        for(var i = 0; i < pipes.length; i++) { pipes[i].x -= 2; }
+        if(pipes.length > 0 && pipes[0].x + pipeWidth < 0) { pipes.shift(); flappyScore++; }
+        for(var i = 0; i < pipes.length; i++) {
           var p = pipes[i];
-          if (flappyBird.x + flappyBird.radius > p.x && flappyBird.x - flappyBird.radius < p.x + pipeWidth) {
-            if (flappyBird.y - flappyBird.radius < p.top || flappyBird.y + flappyBird.radius > p.top + pipeGap)
+          if(flappyBird.x + flappyBird.radius > p.x && flappyBird.x - flappyBird.radius < p.x + pipeWidth) {
+            if(flappyBird.y - flappyBird.radius < p.top || flappyBird.y + flappyBird.radius > p.top + pipeGap)
               flappyGameOver = true;
           }
         }
         document.getElementById("flappyScoreDisplay").innerText = "Score: " + flappyScore;
         flappyCtx.clearRect(0, 0, flappyCanvas.width, flappyCanvas.height);
-        // Draw the bird – either as a duck image or a yellow circle
-        if (flappySkinUnlocked)
+        if(flappySkinUnlocked)
           flappyCtx.drawImage(duckImage, flappyBird.x - flappyBird.radius, flappyBird.y - flappyBird.radius, flappyBird.radius * 2, flappyBird.radius * 2);
         else {
           flappyCtx.fillStyle = "yellow";
@@ -498,8 +500,7 @@
           flappyCtx.arc(flappyBird.x, flappyBird.y, flappyBird.radius, 0, Math.PI * 2);
           flappyCtx.fill();
         }
-        // Draw pipes using the pipe image
-        for (var i = 0; i < pipes.length; i++) {
+        for(var i = 0; i < pipes.length; i++) {
           var p = pipes[i];
           flappyCtx.drawImage(pipeImage, p.x, 0, pipeWidth, p.top);
           flappyCtx.save();
@@ -508,36 +509,35 @@
           flappyCtx.drawImage(pipeImage, 0, 0, pipeWidth, flappyCanvas.height - p.top - pipeGap);
           flappyCtx.restore();
         }
-        if (flappyGameOver) {
+        if(flappyGameOver) {
           clearInterval(flappyInterval);
-          var playerName = prompt("Game Over! Enter your name:");
-          if (playerName) updateLeaderboard("flappy_bird", flappyScore, playerName);
+          // Instead of prompting, use the stored username.
+          updateLeaderboard("flappy_bird", flappyScore, currentUsername);
           document.getElementById("flappyRestartBtn").style.display = "inline-block";
           flappyCtx.fillStyle = "red";
           flappyCtx.font = "40px Arial";
-          flappyCtx.fillText("Game Over", flappyCanvas.width / 2 - 100, flappyCanvas.height / 2);
+          flappyCtx.fillText("Game Over", flappyCanvas.width/2 - 100, flappyCanvas.height/2);
         }
       }
       document.getElementById("flappyRestartBtn").addEventListener("click", function() {
         this.style.display = "none";
-        // Show the start overlay again so the player can hit Start to restart.
         document.getElementById("flappyStartOverlay").style.display = "flex";
       });
-      
+
       /* --- Snake Game --- */
       var snakeCanvas = document.getElementById("snakeCanvas"),
           snakeCtx = snakeCanvas.getContext("2d");
       var snake, snakeDirection, snakeFood, snakeSize, snakeGameOver, snakeInterval;
       function snakeKeyHandler(e) {
         var key = e.code;
-        if (key === "ArrowUp" && snakeDirection !== "down") snakeDirection = "up";
-        else if (key === "ArrowDown" && snakeDirection !== "up") snakeDirection = "down";
-        else if (key === "ArrowLeft" && snakeDirection !== "right") snakeDirection = "left";
-        else if (key === "ArrowRight" && snakeDirection !== "left") snakeDirection = "right";
+        if(key === "ArrowUp" && snakeDirection !== "down") snakeDirection = "up";
+        else if(key === "ArrowDown" && snakeDirection !== "up") snakeDirection = "down";
+        else if(key === "ArrowLeft" && snakeDirection !== "right") snakeDirection = "left";
+        else if(key === "ArrowRight" && snakeDirection !== "left") snakeDirection = "right";
       }
       function initSnake() {
         snakeSize = 20;
-        snake = [{ x: 200, y: 200 }];
+        snake = [{ x:200, y:200 }];
         snakeDirection = "right";
         snakeGameOver = false;
         placeSnakeFood();
@@ -546,40 +546,39 @@
       }
       function placeSnakeFood() {
         snakeFood = {
-          x: Math.floor(Math.random() * (snakeCanvas.width / snakeSize)) * snakeSize,
-          y: Math.floor(Math.random() * (snakeCanvas.height / snakeSize)) * snakeSize
+          x: Math.floor(Math.random()*(snakeCanvas.width/snakeSize))*snakeSize,
+          y: Math.floor(Math.random()*(snakeCanvas.height/snakeSize))*snakeSize
         };
       }
       function updateSnake() {
         var head = { x: snake[0].x, y: snake[0].y };
-        if (snakeDirection === "right") head.x += snakeSize;
-        else if (snakeDirection === "left") head.x -= snakeSize;
-        else if (snakeDirection === "up") head.y -= snakeSize;
-        else if (snakeDirection === "down") head.y += snakeSize;
-        if (head.x < 0 || head.x >= snakeCanvas.width || head.y < 0 || head.y >= snakeCanvas.height)
+        if(snakeDirection === "right") head.x += snakeSize;
+        else if(snakeDirection === "left") head.x -= snakeSize;
+        else if(snakeDirection === "up") head.y -= snakeSize;
+        else if(snakeDirection === "down") head.y += snakeSize;
+        if(head.x < 0 || head.x >= snakeCanvas.width || head.y < 0 || head.y >= snakeCanvas.height)
           snakeGameOver = true;
-        for (var i = 0; i < snake.length; i++) {
-          if (head.x === snake[i].x && head.y === snake[i].y)
+        for(var i = 0; i < snake.length; i++){
+          if(head.x === snake[i].x && head.y === snake[i].y)
             snakeGameOver = true;
         }
-        if (snakeGameOver) {
+        if(snakeGameOver) {
           clearInterval(snakeInterval);
           snakeCtx.fillStyle = "red";
           snakeCtx.font = "30px Arial";
-          snakeCtx.fillText("Game Over", snakeCanvas.width / 2 - 70, snakeCanvas.height / 2);
-          var playerName = prompt("Game Over! Enter your name:");
-          if (playerName) updateLeaderboard("snake", snake.length - 1, playerName);
+          snakeCtx.fillText("Game Over", snakeCanvas.width/2 - 70, snakeCanvas.height/2);
+          updateLeaderboard("snake", snake.length - 1, currentUsername);
           document.getElementById("snakeRestartBtn").style.display = "inline-block";
           return;
         }
         snake.unshift(head);
-        if (head.x === snakeFood.x && head.y === snakeFood.y)
+        if(head.x === snakeFood.x && head.y === snakeFood.y)
           placeSnakeFood();
         else
           snake.pop();
         snakeCtx.clearRect(0, 0, snakeCanvas.width, snakeCanvas.height);
         snakeCtx.fillStyle = "lime";
-        for (var i = 0; i < snake.length; i++) {
+        for(var i = 0; i < snake.length; i++){
           snakeCtx.fillRect(snake[i].x, snake[i].y, snakeSize, snakeSize);
         }
         snakeCtx.fillStyle = "orange";
@@ -589,25 +588,25 @@
         this.style.display = "none";
         initSnake();
       });
-      
+
       /* --- Pacman Game --- */
       var pacmanCanvas = document.getElementById("pacmanCanvas"),
           pacmanCtx = pacmanCanvas.getContext("2d");
       var pacman, pacmanDirection, pacmanPellets, pacmanSize, pacmanInterval;
       function pacmanKeyHandler(e) {
         var key = e.code;
-        if (key === "ArrowUp") pacmanDirection = "up";
-        else if (key === "ArrowDown") pacmanDirection = "down";
-        else if (key === "ArrowLeft") pacmanDirection = "left";
-        else if (key === "ArrowRight") pacmanDirection = "right";
+        if(key === "ArrowUp") pacmanDirection = "up";
+        else if(key === "ArrowDown") pacmanDirection = "down";
+        else if(key === "ArrowLeft") pacmanDirection = "left";
+        else if(key === "ArrowRight") pacmanDirection = "right";
       }
       function initPacman() {
         pacmanSize = 20;
-        pacman = { x: pacmanSize, y: pacmanSize, radius: pacmanSize / 2 };
+        pacman = { x: pacmanSize, y: pacmanSize, radius: pacmanSize/2 };
         pacmanDirection = "right";
         pacmanPellets = [];
-        for (var i = 0; i < pacmanCanvas.width; i += pacmanSize) {
-          for (var j = 0; j < pacmanCanvas.height; j += pacmanSize) {
+        for(var i = 0; i < pacmanCanvas.width; i += pacmanSize) {
+          for(var j = 0; j < pacmanCanvas.height; j += pacmanSize) {
             pacmanPellets.push({ x: i, y: j, eaten: false });
           }
         }
@@ -615,16 +614,16 @@
         pacmanInterval = setInterval(updatePacman, 150);
       }
       function updatePacman() {
-        if (pacmanDirection === "right") pacman.x += pacmanSize;
-        else if (pacmanDirection === "left") pacman.x -= pacmanSize;
-        else if (pacmanDirection === "up") pacman.y -= pacmanSize;
-        else if (pacmanDirection === "down") pacman.y += pacmanSize;
-        if (pacman.x >= pacmanCanvas.width) pacman.x = 0;
-        if (pacman.x < 0) pacman.x = pacmanCanvas.width - pacmanSize;
-        if (pacman.y >= pacmanCanvas.height) pacman.y = 0;
-        if (pacman.y < 0) pacman.y = pacmanCanvas.height - pacmanSize;
+        if(pacmanDirection === "right") pacman.x += pacmanSize;
+        else if(pacmanDirection === "left") pacman.x -= pacmanSize;
+        else if(pacmanDirection === "up") pacman.y -= pacmanSize;
+        else if(pacmanDirection === "down") pacman.y += pacmanSize;
+        if(pacman.x >= pacmanCanvas.width) pacman.x = 0;
+        if(pacman.x < 0) pacman.x = pacmanCanvas.width - pacmanSize;
+        if(pacman.y >= pacmanCanvas.height) pacman.y = 0;
+        if(pacman.y < 0) pacman.y = pacmanCanvas.height - pacmanSize;
         pacmanPellets.forEach(function(p) {
-          if (!p.eaten && Math.abs(pacman.x - p.x) < pacmanSize && Math.abs(pacman.y - p.y) < pacmanSize)
+          if(!p.eaten && Math.abs(pacman.x - p.x) < pacmanSize && Math.abs(pacman.y - p.y) < pacmanSize)
             p.eaten = true;
         });
         drawPacman();
@@ -633,20 +632,20 @@
         pacmanCtx.clearRect(0, 0, pacmanCanvas.width, pacmanCanvas.height);
         pacmanCtx.fillStyle = "white";
         pacmanPellets.forEach(function(p) {
-          if (!p.eaten) {
+          if(!p.eaten) {
             pacmanCtx.beginPath();
-            pacmanCtx.arc(p.x + pacmanSize / 2, p.y + pacmanSize / 2, 3, 0, Math.PI * 2);
+            pacmanCtx.arc(p.x + pacmanSize/2, p.y + pacmanSize/2, 3, 0, Math.PI*2);
             pacmanCtx.fill();
           }
         });
         pacmanCtx.fillStyle = "yellow";
         pacmanCtx.beginPath();
-        pacmanCtx.arc(pacman.x + pacmanSize / 2, pacman.y + pacmanSize / 2, pacman.radius, 0.25 * Math.PI, 1.75 * Math.PI);
-        pacmanCtx.lineTo(pacman.x + pacmanSize / 2, pacman.y + pacmanSize / 2);
+        pacmanCtx.arc(pacman.x + pacmanSize/2, pacman.y + pacmanSize/2, pacman.radius, 0.25*Math.PI, 1.75*Math.PI);
+        pacmanCtx.lineTo(pacman.x + pacmanSize/2, pacman.y + pacmanSize/2);
         pacmanCtx.fill();
         var eatenCount = pacmanPellets.filter(p => p.eaten).length;
-        if (eatenCount > parseInt(localStorage.getItem("bestPacman") || "0"))
-          localStorage.setItem("bestPacman", eatenCount);
+        // For simplicity, update leaderboard after each update
+        updateLeaderboard("pacman", eatenCount, currentUsername);
       }
       document.getElementById("pacmanRestartBtn").addEventListener("click", function() {
         this.style.display = "none";
@@ -659,7 +658,6 @@
         document.getElementById("flappyGame").style.display = "block";
         document.getElementById("flappyGame").style.backgroundColor = document.getElementById("flappyBgPicker").value;
         currentGame = "flappy";
-        // Show the start overlay – the game starts when "Start" is clicked.
         document.getElementById("flappyStartOverlay").style.display = "flex";
       });
       document.getElementById("snakeBtn").addEventListener("click", function() {
@@ -674,13 +672,31 @@
         currentGame = "pacman";
         initPacman();
       });
-      
-      /* --- Flappy Bird Start Button --- */
       document.getElementById("flappyStartBtn").addEventListener("click", function() {
         document.getElementById("flappyStartOverlay").style.display = "none";
         initFlappy();
       });
       
+      /* --- Utility: Hide All Game Containers --- */
+      function hideAllGameContainers() {
+        document.getElementById("flappyGame").style.display = "none";
+        document.getElementById("snakeGame").style.display = "none";
+        document.getElementById("pacmanGame").style.display = "none";
+      }
+      /* --- Utility: Stop the Current Game --- */
+      function stopCurrentGame() {
+        if (currentGame === "flappy") {
+          document.removeEventListener("keydown", flappyKeyHandler);
+          clearInterval(flappyInterval);
+        } else if (currentGame === "snake") {
+          document.removeEventListener("keydown", snakeKeyHandler);
+          clearInterval(snakeInterval);
+        } else if (currentGame === "pacman") {
+          document.removeEventListener("keydown", pacmanKeyHandler);
+          clearInterval(pacmanInterval);
+        }
+        currentGame = "";
+      }
     });
   </script>
 </body>
