@@ -1,171 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Retro Center – Fixed Version</title>
-  <style>
-    /* Fixed Background Shapes */
-    .floating-shapes {
-      position: fixed;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      z-index: -1;
-    }
-
-    .shape {
-      position: absolute;
-      opacity: 0.15;
-      animation: float 20s infinite linear;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translate(0, 0) rotate(0deg); }
-      25% { transform: translate(10vw, -10vh) rotate(45deg); }
-      50% { transform: translate(-5vw, 15vh) rotate(-45deg); }
-      75% { transform: translate(15vw, 5vh) rotate(90deg); }
-    }
-
-    /* Fixed Navigation and Layout */
-    #navBar {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background: rgba(0 0 0 / 90%);
-      z-index: 1000;
-    }
-
-    .page {
-      position: relative;
-      padding-top: 80px;
-      min-height: calc(100vh - 80px);
-      background: rgba(16 16 16 / 80%);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Audio Player</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Floating Shapes Background -->
-  <div class="floating-shapes" id="shapesContainer"></div>
-
-  <!-- Navigation (same structure) -->
-  <div id="navBar">...</div>
-
-  <!-- Games List Page -->
-  <div id="gamesListPage" class="page">
-    <div class="game-list-header">
-      <button id="workingBackBtn" class="nav-btn">← Back</button>
-      <h2>Available Games</h2>
+    <div class="audio-player">
+        <div class="player-controls">
+            <button id="prev" class="control-btn">⏮️</button>
+            <button id="play" class="control-btn">▶️</button>
+            <button id="next" class="control-btn">⏭️</button>
+        </div>
+        <div class="audio-details">
+            <p id="track-name">Track Name</p>
+        </div>
+        <audio id="audio" src="your-audio-file.mp3"></audio>
     </div>
-    <!-- Game items -->
-  </div>
 
-  <!-- Flappy Bird Container -->
-  <div class="game-container" id="flappyGame">
-    <div class="game-header">
-      <button class="back-btn" data-back="games">← Back</button>
-      <h2>Flappy Bird</h2>
-    </div>
-    <!-- Game content -->
-  </div>
-
-<script>
-// Fixed Background Generation
-function createFloatingShapes() {
-  const shapesContainer = document.getElementById('shapesContainer');
-  const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeead'];
-  const types = ['circle', 'square'];
-
-  for(let i = 0; i < 25; i++) {
-    const shape = document.createElement('div');
-    shape.className = 'shape';
-    shape.style.cssText = `
-      width: ${Math.random() * 100 + 50}px;
-      height: ${Math.random() * 100 + 50}px;
-      background: ${colors[Math.floor(Math.random() * colors.length)]};
-      border-radius: ${types[Math.floor(Math.random() * types.length)] === 'circle' ? '50%' : '0'};
-      left: ${Math.random() * 100}%;
-      top: ${Math.random() * 100}%;
-      animation-delay: ${Math.random() * 20}s;
-    `;
-    shapesContainer.appendChild(shape);
-  }
-}
-
-// Fixed Navigation Controls
-document.addEventListener('DOMContentLoaded', () => {
-  createFloatingShapes();
-  
-  // Working Back Button
-  document.getElementById('workingBackBtn').addEventListener('click', () => {
-    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-    document.getElementById('mainContainer').style.display = 'block';
-  });
-
-  // Fixed Game Navigation
-  document.querySelectorAll('.gameItem').forEach(item => {
-    item.addEventListener('click', function() {
-      const game = this.dataset.game;
-      document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-      document.getElementById(`${game}Game`).style.display = 'block';
-      
-      if(game === 'flappy') {
-        initializeFlappy();
-      }
-    });
-  });
-});
-
-// Fixed Flappy Bird Initialization
-let flappyInterval;
-
-function initializeFlappy() {
-  const canvas = document.getElementById('flappyCanvas');
-  const startBtn = document.getElementById('flappyStartBtn');
-  
-  // Reset game state
-  if(flappyInterval) clearInterval(flappyInterval);
-  
-  startBtn.addEventListener('click', () => {
-    document.getElementById('flappyStartOverlay').style.display = 'none';
-    startFlappyGame(canvas);
-  });
-
-  canvas.width = 800;
-  canvas.height = 600;
-}
-
-function startFlappyGame(canvas) {
-  const ctx = canvas.getContext('2d');
-  let birdY = canvas.height / 2;
-  let velocity = 0;
-  let gravity = 0.5;
-  let pipes = [];
-  
-  // Working game loop
-  flappyInterval = setInterval(() => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Bird physics
-    velocity += gravity;
-    birdY += velocity;
-    
-    // Draw bird
-    ctx.fillStyle = '#FFD700';
-    ctx.beginPath();
-    ctx.arc(100, birdY, 20, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // Basic collision
-    if(birdY > canvas.height || birdY < 0) {
-      resetFlappy();
-    }
-  }, 1000/60);
-}
-
-function resetFlappy() {
-  clearInterval(flappyInterval);
-  document.getElementById('flappyStartOverlay').style.display = 'flex';
-}
-</script>
+    <script src="script.js"></script>
 </body>
 </html>
