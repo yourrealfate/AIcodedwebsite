@@ -1,0 +1,45 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #121212;
+}
+
+.audio-player {
+    text-align: center;
+    background-color: #333;
+    border-radius: 8px;
+    padding: 20px;
+    width: 320px;
+}
+
+.player-controls {
+    margin-bottom: 10px;
+}
+
+.control-btn {
+    background: #1DB954;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 15px;
+    font-size: 20px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.control-btn:hover {
+    background-color: #1ed760;
+}
+
+.audio-details {
+    margin-top: 10px;
+    color: white;
+}
+
+audio {
+    display: none;
+}
